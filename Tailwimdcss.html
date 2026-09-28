@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Learn Tailwind CSS v4</title>
+<style>
+:root{box-sizing:border-box;--bg:#fff;--fg:#0f172a;--mu:#64748b;--bd:#e2e8f0;--pn:#f8fafc;--ac:#0284c7;--ok:#16a34a;--bad:#dc2626;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1220;--fg:#e2e8f0;--mu:#94a3b8;--bd:#1e293b;--pn:#111a2e;--ac:#38bdf8}}
+:root[data-theme="dark"]{--bg:#0b1220;--fg:#e2e8f0;--mu:#94a3b8;--bd:#1e293b;--pn:#111a2e;--ac:#38bdf8}
+*{box-sizing:border-box}html{scroll-padding-top:60px}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--ac)}button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;gap:8px;align-items:center;padding:8px 14px;background:var(--bg);border-bottom:1px solid var(--bd)}
+header h1{font-size:1rem;margin:0;flex:0 0 auto}
+.btn{border:1px solid var(--bd);background:var(--pn);color:var(--fg);border-radius:8px;padding:6px 12px}
+.btn.p{background:var(--ac);color:#fff;border-color:var(--ac)}
+#q{flex:1;min-width:0;padding:7px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--pn);color:var(--fg)}
+#menu{display:none}
+.wrap{display:flex}
+nav#side{width:280px;flex:0 0 280px;height:calc(100vh - 54px);position:sticky;top:54px;overflow:auto;padding:12px;border-right:1px solid var(--bd)}
+nav h3{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mu);margin:14px 0 4px}
+nav a{display:flex;justify-content:space-between;padding:3px 8px;border-radius:6px;text-decoration:none;color:var(--fg);font-size:.9rem}
+nav a:hover{background:var(--pn)}nav a.on{background:var(--ac);color:#fff}nav a .d{color:var(--ok)}nav a.on .d{color:#fff}
+main{flex:1;min-width:0;max-width:860px;margin:0 auto;padding:20px}
+h2{margin:1.6em 0 .4em;font-size:1.25rem}h1.t{font-size:2rem;margin:.2em 0}
+pre{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;overflow-x:auto;font-size:.85rem;margin:8px 0}
+.k{color:#7dd3fc}.s{color:#86efac}.a{color:#fca5a5}
+.card{border:1px solid var(--bd);background:var(--pn);border-radius:10px;padding:12px 14px;margin:10px 0}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+textarea{width:100%;min-height:170px;font:13px/1.5 ui-monospace,Menlo,monospace;background:#0f172a;color:#e2e8f0;border:1px solid var(--bd);border-radius:8px;padding:10px}
+iframe{width:100%;min-height:170px;border:1px solid var(--bd);border-radius:8px;background:#fff}
+.q label{display:block;padding:6px 8px;border:1px solid var(--bd);border-radius:8px;margin:4px 0;cursor:pointer}
+.fb{font-size:.9rem;margin-top:4px}.ok{color:var(--ok)}.no{color:var(--bad)}
+.bar{height:6px;background:var(--bd);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok)}
+.pn{display:flex;justify-content:space-between;margin:28px 0}
+#slides{position:fixed;inset:0;z-index:50;background:var(--bg);display:none;flex-direction:column;padding:28px 6vw}
+#slides.on{display:flex}#slides h2{font-size:2.2rem}#slides .body{flex:1;overflow:auto;font-size:1.4rem}
+#slides pre{font-size:1.05rem}#notes{font-size:.95rem;color:var(--mu);border-top:1px solid var(--bd);padding-top:8px}
+@media(max-width:860px){#menu{display:block}nav#side{position:fixed;left:0;top:54px;z-index:30;background:var(--bg);transform:translateX(-100%);transition:transform .2s}nav#side.open{transform:none}.pg{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<button class="btn" id="menu" aria-label="Toggle sidebar">☰</button>
+<h1>Tailwind CSS v4 Course</h1>
+<input id="q" type="search" placeholder="Search topics… ( / )" aria-label="Search topics">
+<button class="btn" id="pres">▶ Present</button>
+<button class="btn" id="theme" aria-label="Toggle theme">◐</button>
+</header>
+<div class="wrap">
+<nav id="side" aria-label="Documentation"></nav>
+<main id="main" tabindex="-1"></main>
+</div>
+<div id="slides" role="dialog" aria-label="Presentation mode"><div class="body" id="sb"></div><div id="notes"></div>
+<div class="pn"><button class="btn" id="sp">← Prev</button><span id="sc"></span><span><button class="btn" id="sf">Fullscreen</button> <button class="btn" id="sx">Exit (Esc)</button></span><button class="btn p" id="sn">Next →</button></div></div>
+
+<script>
+const OFFICIAL="https://tailwindcss.com/docs/";
+// Full official sidebar (Tailwind v4.3), in original order
+const SIDE=[
+["Getting started","installation editor-setup compatibility upgrade-guide"],
+["Core concepts","styling-with-utility-classes hover-focus-and-other-states responsive-design dark-mode theme colors adding-custom-styles detecting-classes-in-source-files functions-and-directives"],
+["Base styles","preflight"],
+["Layout","aspect-ratio columns break-after break-before break-inside box-decoration-break box-sizing display float clear isolation object-fit object-position overflow overscroll-behavior position top-right-bottom-left visibility z-index"],
+["Flexbox & Grid","flex-basis flex-direction flex-wrap flex flex-grow flex-shrink order grid-template-columns grid-column grid-template-rows grid-row grid-auto-flow grid-auto-columns grid-auto-rows gap justify-content justify-items justify-self align-content align-items align-self place-content place-items place-self"],
+["Spacing","padding margin"],
+["Sizing","width min-width max-width height min-height max-height inline-size min-inline-size max-inline-size block-size min-block-size max-block-size"],
+["Typography","font-family font-size font-smoothing font-style font-weight font-stretch font-variant-numeric font-feature-settings letter-spacing line-clamp line-height list-style-image list-style-position list-style-type text-align color text-decoration-line text-decoration-color text-decoration-style text-decoration-thickness text-underline-offset text-transform text-overflow text-wrap text-indent tab-size vertical-align white-space word-break overflow-wrap hyphens content"],
+["Backgrounds","background-attachment background-clip background-color background-image background-origin background-position background-repeat background-size"],
+["Borders","border-radius border-width border-color border-style outline-width outline-color outline-style outline-offset"],
+["Effects","box-shadow text-shadow opacity mix-blend-mode background-blend-mode mask-clip mask-composite mask-image mask-mode mask-origin mask-position mask-repeat mask-size mask-type"],
+["Filters","filter filter-blur filter-brightness filter-contrast filter-drop-shadow filter-grayscale filter-hue-rotate filter-invert filter-saturate filter-sepia backdrop-filter backdrop-filter-blur backdrop-filter-brightness backdrop-filter-contrast backdrop-filter-grayscale backdrop-filter-hue-rotate backdrop-filter-invert backdrop-filter-opacity backdrop-filter-saturate backdrop-filter-sepia"],
+["Tables","border-collapse border-spacing table-layout caption-side"],
+["Transitions & Animation","transition-property transition-behavior transition-duration transition-timing-function transition-delay animation"],
+["Transforms","backface-visibility perspective perspective-origin rotate scale skew transform transform-origin transform-style translate zoom"],
+["Interactivity","accent-color appearance caret-color color-scheme cursor field-sizing pointer-events resize scroll-behavior scrollbar-color scrollbar-width scrollbar-gutter scroll-margin scroll-padding scroll-snap-align scroll-snap-stop scroll-snap-type touch-action user-select will-change"],
+["SVG","fill stroke stroke-width"],
+["Accessibility","forced-color-adjust"]
+].map(([n,s])=>({n,items:s.split(" ").map(id=>({id,t:id==="top-right-bottom-left"?"top / right / bottom / left":id.replace(/^(backdrop-)?filter-/,(m,b)=>(b?"backdrop ":"filter ")+"› ")}))}));
+const FLAT=SIDE.flatMap(s=>s.items.map(i=>({...i,sec:s.n})));
+
+// Written lessons (others fall back to the generic lesson with a live playground + official link)
+const L={
+"installation":{def:"Installation means adding Tailwind to your build so it can scan your files for class names and generate a small CSS file. In v4 the fastest route is the Vite plugin.",why:"Without a build step wired up, class names like text-3xl do nothing.",how:"Tailwind scans HTML/JS/JSX for class names, generates only the CSS you use, and writes one static file. v4 needs no tailwind.config.js by default.",syntax:"npm install tailwindcss @tailwindcss/vite\n\n/* vite.config.js */\nplugins: [tailwindcss()]\n\n/* app.css */\n@import \"tailwindcss\";",ex:[{code:'<h1 class="text-3xl font-bold underline">Hello world!</h1>',exp:"text-3xl sets font size; font-bold sets weight 700; underline adds text-decoration."}],mis:"v3 used @tailwind base/components/utilities and a config file. In v4 use a single @import \"tailwindcss\". Forgetting to import the CSS file in your entry is the other common bug.",take:"Install tailwindcss + @tailwindcss/vite, add the plugin, import once in CSS.",quiz:[{q:"Which CSS line loads Tailwind v4?",o:['@tailwind base;','@import "tailwindcss";','@use "tailwind";'],a:1,f:"v4 replaced the three @tailwind directives with one import."},{q:"Does Tailwind v4 require tailwind.config.js?",o:["Yes, always","No, CSS-first config is default"],a:1,f:"Theme is configured in CSS with @theme."}],notes:"Show the 6 install steps live. Stress that Tailwind only outputs classes it finds."},
+"styling-with-utility-classes":{def:"A utility class does one small job, like p-4 (padding) or text-center. You build designs by combining many of them in your markup.",why:"You stay in one file, avoid inventing class names, and styles never leak between components.",how:"Each class maps to one CSS declaration. The browser sees normal CSS generated from the classes you used.",syntax:'<div class="mx-auto flex max-w-sm items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg">',ex:[{code:'<button class="rounded-lg bg-sky-600 px-4 py-2 font-semibold text-white">Save</button>',exp:"rounded-lg = border-radius; bg-sky-600 = background colour; px-4/py-2 = horizontal/vertical padding; text-white = colour."},{code:'<div class="flex items-center gap-3 p-4 bg-slate-100 rounded-xl">\n  <div class="size-10 rounded-full bg-indigo-500"></div>\n  <p class="font-medium">Ada Lovelace</p>\n</div>',exp:"flex lays children in a row; items-center centres vertically; gap-3 adds space; size-10 sets width and height together."}],mis:"Writing dynamic class names like `bg-${color}-500` — Tailwind can't see them. Use complete class names.",take:"One class = one job. Compose them. Use complete class names.",quiz:[{q:"What does px-4 do?",o:["Padding top/bottom","Padding left/right","Margin left/right"],a:1,f:"px = padding on the x-axis."},{q:"Which is safe for Tailwind to detect?",o:["'bg-'+color+'-500'","'bg-red-500'"],a:1,f:"Tailwind scans for complete strings."}],notes:"Live-edit the button: change colours and padding to show instant feedback."},
+"hover-focus-and-other-states":{def:"Variants are prefixes such as hover: and focus: that apply a utility only in a given state.",why:"Interactive UI needs different looks for hover, focus, disabled and more — and keyboard users need visible focus.",how:"hover:bg-sky-700 becomes a rule scoped to :hover. Variants can be stacked, e.g. dark:md:hover:bg-black.",syntax:'<button class="bg-sky-500 hover:bg-sky-700 focus-visible:outline-2 disabled:opacity-50">',ex:[{code:'<button class="rounded bg-sky-600 px-4 py-2 text-white hover:bg-sky-800 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-orange-500 active:scale-95">Try hover, Tab, click</button>',exp:"hover changes colour; focus-visible shows an outline for keyboard focus; active shrinks slightly while pressed."}],mis:"Removing outlines (outline-none) without a replacement harms keyboard accessibility.",take:"State prefix + utility. Always keep a visible focus style.",quiz:[{q:"Which variant targets keyboard focus best?",o:["hover:","focus-visible:","active:"],a:1,f:"focus-visible shows for keyboard users."}],notes:"Press Tab in the preview to demonstrate focus-visible."},
+"responsive-design":{def:"Tailwind is mobile-first: unprefixed utilities apply everywhere, and prefixes like md: apply at that width and up.",why:"One markup serves phones, tablets and desktops.",how:"Breakpoints (v4 defaults): sm 40rem, md 48rem, lg 64rem, xl 80rem, 2xl 96rem, applied with min-width media queries.",syntax:'<div class="grid grid-cols-1 md:grid-cols-3">',ex:[{code:'<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">\n  <div class="rounded bg-sky-200 p-4">1</div><div class="rounded bg-sky-300 p-4">2</div>\n  <div class="rounded bg-sky-400 p-4">3</div><div class="rounded bg-sky-500 p-4">4</div>\n</div>',exp:"One column by default, 2 from sm, 4 from lg. Resize the preview."}],mis:"Using sm: to mean 'on mobile'. It means 'sm and wider'. Style mobile first without a prefix.",take:"Unprefixed = all sizes. Prefixed = that size and up.",quiz:[{q:"What does md:flex mean?",o:["Flex only on medium screens","Flex from medium screens upward","Flex below medium"],a:1,f:"Breakpoints are min-width."}],notes:"Drag the browser window narrower to show the grid collapsing."},
+"dark-mode":{def:"The dark: variant applies utilities when dark mode is active. By default it follows the OS setting via prefers-color-scheme.",why:"Users expect themes that respect their system preference.",how:"To toggle manually, override the variant in CSS: @custom-variant dark (&:where(.dark, .dark *)); then add class dark to an ancestor.",syntax:'<div class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">',ex:[{code:'<div class="dark"><div class="rounded-xl bg-white p-6 text-slate-900 dark:bg-slate-900 dark:text-white">\n  <p class="font-semibold">Dark styles active (parent has .dark, only if configured)</p></div></div>',exp:"Colours flip when the dark variant matches. Also check contrast in both themes."}],mis:"v3 used darkMode: 'class' in the config; v4 uses @custom-variant in CSS.",take:"dark: + utility. Configure @custom-variant for manual toggles.",quiz:[{q:"Default trigger for dark: in v4?",o:["A .dark class","prefers-color-scheme","localStorage"],a:1,f:"Media query by default."}],notes:"Toggle this site's theme button to show the idea."},
+"padding":{def:"Padding is space inside an element, between its content and border.",why:"Consistent spacing makes UIs readable and touch targets usable.",how:"p-4 = 1rem in v4 (spacing scale is a multiple of 0.25rem: p-1 = .25rem). Sides: pt pr pb pl, axes: px py.",syntax:"p-<n> | px-<n> | pt-<n> | p-[<custom>]",ex:[{code:'<div class="flex gap-3 text-center">\n  <div class="bg-sky-200 p-2">p-2</div><div class="bg-sky-200 p-6">p-6</div><div class="bg-sky-200 px-8 py-1">px-8 py-1</div>\n</div>',exp:"Numbers multiply the spacing unit; px/py set axes separately."}],mis:"Confusing padding with margin: padding is inside the box's background.",take:"p-n scale, px/py axes, p-[value] for custom.",quiz:[{q:"Which adds horizontal padding only?",o:["py-4","px-4","m-4"],a:1,f:"px = x-axis padding."}],notes:"Show how the background colour extends under padding."},
+"forced-color-adjust":{def:"forced-color-adjust-auto/none controls whether the browser's forced-colors (high-contrast) mode overrides your colours.",why:"High-contrast users rely on system colours; accessibility means respecting them.",how:"Default is auto (browser overrides). forced-color-adjust-none opts an element out — use sparingly. Tailwind also offers the forced-colors: variant.",syntax:'<div class="forced-color-adjust-none">',ex:[{code:'<p class="rounded bg-sky-600 p-3 text-white forced-colors:bg-[Canvas] forced-colors:text-[CanvasText]">Adapts in high-contrast mode</p>',exp:"forced-colors: lets you pick system colour keywords when forced colours are on."}],mis:"Opting out of forced colours everywhere; it can make content unreadable.",take:"Leave it auto; opt out only for things like colour swatches.",quiz:[{q:"Safe default value?",o:["auto","none"],a:0,f:"auto respects user settings."}],notes:"Mention Windows High Contrast."}
+};
+function lesson(it){const l=L[it.id];if(l)return l;
+return{generic:1,def:`“${it.t}” is a Tailwind CSS feature in the ${it.sec} section of the official docs (v4.3). This lesson is a starter: try the playground, then read the full reference.`,why:"Knowing the exact class names and values saves time and avoids custom CSS.",how:"Tailwind generates one CSS declaration per utility class it finds in your files.",syntax:"See the official page for the complete class list and arbitrary-value syntax.",ex:[{code:'<div class="rounded-xl bg-sky-100 p-6 text-sky-900">Edit classes for “'+it.t+'” here</div>',exp:"Starter example — change the classes and press Run."}],mis:"Check the official page for topic-specific pitfalls and v3→v4 changes.",take:"Use the official page as the source of truth.",quiz:[{q:"Where is the source of truth for class names?",o:["Random blogs","Official Tailwind docs"],a:1,f:"Always confirm with tailwindcss.com/docs."}],notes:"Open the official page on screen for this topic."};}
+
+const $=s=>document.querySelector(s);
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const hl=s=>esc(s).replace(/(class)=(&quot;|")([^"]*)"/g,'<span class="k">class</span>=<span class="s">"$3"</span>').replace(/(&lt;\/?[a-z0-9]+)/g,'<span class="a">$1</span>');
+let P={};try{P=JSON.parse(localStorage.getItem("twp")||"{}")}catch(e){}
+const save=()=>{try{localStorage.setItem("twp",JSON.stringify(P))}catch(e){}};
+let cur=0;
+function buildNav(f=""){const n=$("#side");let h=`<div class="bar" title="Progress"><i style="width:${Math.round(100*Object.values(P).filter(v=>v.done).length/FLAT.length)}%"></i></div><small>${Object.values(P).filter(v=>v.done).length}/${FLAT.length} complete</small>`;
+SIDE.forEach(s=>{const it=s.items.filter(i=>!f||(i.t+s.n).toLowerCase().includes(f));if(!it.length)return;h+=`<h3>${s.n}</h3>`+it.map(i=>`<a href="#${i.id}" class="${FLAT[cur].id===i.id?"on":""}">${i.t}<span class="d">${P[i.id]?.done?"✓":""}</span></a>`).join("")});n.innerHTML=h}
+function render(){const id=location.hash.slice(1)||"installation";cur=Math.max(0,FLAT.findIndex(x=>x.id===id));const it=FLAT[cur],l=lesson(it);
+const exs=l.ex.map((e,i)=>`<div class="card"><b>Example ${i+1}</b><pre>${hl(e.code)}</pre><p><b>Line-by-line:</b> ${esc(e.exp)}</p><div class="pg"><div><textarea spellcheck="false" aria-label="Editable code" id="ed${i}">${esc(e.code)}</textarea><button class="btn p" data-run="${i}">Run</button> <button class="btn" data-reset="${i}">Reset</button> <button class="btn" data-copy="${i}">Copy code</button></div><iframe sandbox="allow-scripts" title="Live preview" id="fr${i}"></iframe></div></div>`).join("");
+const qs=l.quiz.map((q,i)=>`<div class="card q"><b>${i+1}. ${esc(q.q)}</b>${q.o.map((o,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${esc(o)}</label>`).join("")}<div class="fb" id="fb${i}" aria-live="polite"></div></div>`).join("");
+$("#main").innerHTML=`<small>${it.sec} · Tailwind v4.3</small><h1 class="t">${it.t}</h1>
+<p><a href="${OFFICIAL}${it.id}" target="_blank" rel="noopener">Official reference ↗</a></p>
+<h2>What is it?</h2><p>${esc(l.def)}</p><h2>Why it matters</h2><p>${esc(l.why)}</p><h2>How it works</h2><p>${esc(l.how)}</p>
+<h2>Syntax</h2><pre>${esc(l.syntax)}</pre><h2>Examples &amp; playground</h2>${exs}
+<h2>Common mistakes</h2><div class="card">${esc(l.mis)}</div><h2>Key takeaways</h2><div class="card">${esc(l.take)}</div>
+<h2>Quiz</h2>${qs}<button class="btn p" id="chk">Check answers</button> <span id="sc2" aria-live="polite"></span>
+<div class="pn"><a class="btn" href="#${FLAT[cur-1]?.id||it.id}">← Previous</a><button class="btn" id="dn">Mark complete</button><a class="btn p" href="#${FLAT[cur+1]?.id||it.id}">Next →</a></div>`;
+l.ex.forEach((_,i)=>run(i));buildNav($("#q").value.toLowerCase());scrollTo(0,0);$("#side").classList.remove("open");
+if(P[it.id]?.s!=null)$("#sc2").textContent="Last score: "+P[it.id].s+"/"+l.quiz.length}
+const doc=c=>`<!doctype html><meta name=viewport content="width=device-width,initial-scale=1"><script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.11"><\/script><body style="margin:12px;font-family:system-ui">${c}`;
+function run(i){$("#fr"+i).srcdoc=doc($("#ed"+i).value)}
+document.addEventListener("click",e=>{const t=e.target,it=FLAT[cur],l=lesson(it);
+if(t.dataset.run!=null)run(t.dataset.run);
+if(t.dataset.reset!=null){$("#ed"+t.dataset.reset).value=l.ex[t.dataset.reset].code;run(t.dataset.reset)}
+if(t.dataset.copy!=null){const v=$("#ed"+t.dataset.copy).value;(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>t.textContent="Copied ✓",()=>{$("#ed"+t.dataset.copy).select();t.textContent="Selected — press Ctrl+C"})}
+if(t.id==="chk"){let s=0;l.quiz.forEach((q,i)=>{const c=document.querySelector(`input[name=q${i}]:checked`),f=$("#fb"+i);if(!c){f.textContent="Pick an answer.";return}const ok=+c.value===q.a;s+=ok;f.className="fb "+(ok?"ok":"no");f.textContent=(ok?"Correct. ":"Not quite. ")+q.f});P[it.id]={...P[it.id],s};save();$("#sc2").textContent="Score: "+s+"/"+l.quiz.length}
+if(t.id==="dn"){P[it.id]={...P[it.id],done:!P[it.id]?.done};save();t.textContent=P[it.id].done?"Completed ✓":"Mark complete";buildNav($("#q").value.toLowerCase())}
+});
+$("#q").oninput=e=>buildNav(e.target.value.toLowerCase());
+$("#menu").onclick=()=>$("#side").classList.toggle("open");
+const setTheme=t=>{document.documentElement.dataset.theme=t;try{localStorage.setItem("twt",t)}catch(e){}};
+$("#theme").onclick=()=>setTheme((document.documentElement.dataset.theme||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light"))==="dark"?"light":"dark");
+try{const t=localStorage.getItem("twt");if(t)setTheme(t)}catch(e){}
+// Presentation mode
+let S=[],si=0;
+function openPres(){const it=FLAT[cur],l=lesson(it);S=[["Definition",`<p>${esc(l.def)}</p>`,l.notes],["Why it matters",`<p>${esc(l.why)}</p>`,"Ask the class: where would you use this?"],["How it works",`<p>${esc(l.how)}</p>`,"Explain in your own words."],["Syntax",`<pre>${esc(l.syntax)}</pre>`,"Read the code aloud."],...l.ex.map((e,i)=>["Example "+(i+1),`<pre>${esc(e.code)}</pre><p>${esc(e.exp)}</p><div id="live${i}"></div>`,"Walk through each class."]),["Common mistakes",`<p>${esc(l.mis)}</p>`,"Ask: have you seen this bug?"],["Takeaway",`<p>${esc(l.take)}</p>`,"Recap, then move on."]];si=0;$("#slides").classList.add("on");show()}
+function show(){const s=S[si];$("#sb").innerHTML=`<h2>${FLAT[cur].t} — ${s[0]}</h2>`+s[1];$("#notes").textContent="Presenter notes: "+s[2];$("#sc").textContent=(si+1)+" / "+S.length;const m=s[1].match(/id="live(\d+)"/);if(m){const f=document.createElement("iframe");f.sandbox="allow-scripts";f.srcdoc=doc(lesson(FLAT[cur]).ex[m[1]].code);$("#live"+m[1]).append(f)}}
+const mv=d=>{si=Math.min(S.length-1,Math.max(0,si+d));show()};
+$("#pres").onclick=openPres;$("#sn").onclick=()=>mv(1);$("#sp").onclick=()=>mv(-1);
+const closeP=()=>{$("#slides").classList.remove("on");if(document.fullscreenElement)document.exitFullscreen()};
+$("#sx").onclick=closeP;$("#sf").onclick=()=>{if($("#slides").requestFullscreen)$("#slides").requestFullscreen().catch(()=>{})};
+document.addEventListener("keydown",e=>{if($("#slides").classList.contains("on")){if(e.key==="ArrowRight"||e.key===" ")mv(1);if(e.key==="ArrowLeft")mv(-1);if(e.key==="Escape")closeP();return}
+if(e.key==="/"&&document.activeElement.tagName!=="TEXTAREA"&&document.activeElement.tagName!=="INPUT"){e.preventDefault();$("#q").focus()}});
+addEventListener("hashchange",render);render();
+</script>
+</body>
+</html>
